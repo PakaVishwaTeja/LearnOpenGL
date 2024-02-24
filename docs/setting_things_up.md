@@ -53,8 +53,8 @@ cd ../out/build
 ./learn_OpenGL
 ```
 
->[!TIP] Excellent! Now, if we execute:
->_
+>[!TIP] 
+>Excellent! Now, if we execute:
 >
 >```
 >bash scripts/configure.sh 
@@ -108,3 +108,46 @@ This ensures that the linker searches for GLFW libraries in the specified direct
 >
 > into `main.cpp` and building the project.
 
+
+### 1.2.2  Integrating GLAD
+
+- Go to [GLAD website](https://glad.dav1d.de/)
+- Configure:
+    - Language: C/C++
+    - API: OpenGL
+    - OpenGL version: 3.3
+    - Profile: Core
+    - Check "Generate a loader"
+- Generate the files download glad.zip
+- Add the generated folder to `external/`
+- Create a CMake file for GLAD in `external/glad/`
+```
+#external/glad/CmakeLists.txt
+
+#generates glad lib 
+add_library (glad
+include/glad/glad.h
+src/glad.c)
+
+#include dirs for glad
+target_include_directories(glad
+PUBLIC include)
+```
+
+Now, in the project's root CMake:
+- Add GLAD similar to the changes for GLFW. ([[#^4090cf|Cmake changes for GLFW1.2.1.2 ]])
+
+
+>[!TIP]
+>Verify the integration by adding
+>```
+>#include <glad/glad.h>
+>```
+>into `main.cpp` and building the project we can verify!
+
+
+# end
+
+>[!TIP]
+>now we are all set to create a window!
+>
