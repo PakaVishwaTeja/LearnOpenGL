@@ -25,15 +25,15 @@
 -  In the root of the project directory, add a `CMakeLists.txt`:
 ```
 cmake_minimum_required (VERSION 2.8)
-
-project (learnOpenGL)
+#give project name
+project (learn_OpenGL)
 
 #version number
-set (hello_VERSION_MAJOR 3)
-set (hello_VERSION_MINOR 0)
+set (learn_OpenGL_VERSION_MAJOR 3)
+set (learn_OpenGL_VERSION_MINOR 0)
 
 #indicate the entry point for the executable
-add_executable ( ${PROJECT_NAME} main.cpp)
+add_executable ( ${PROJECT_NAME}  main.cpp)
 
 ```
 ### 1.1.3 Configure, Build, and Run Scripts
@@ -53,7 +53,7 @@ cd ../out/build
 ./learn_OpenGL
 ```
 
->[!success] Excellent! Now, if we execute:
+>[!TIP] Excellent! Now, if we execute:
 >_
 >
 >```
@@ -65,4 +65,46 @@ cd ../out/build
 
 
 
+## 1.2 **Bringing in the Crew: GLFW and Glad**
+### 1.2.1  Integrating GLFW
+
+#### 1.2.1.1 Adding GLFW as a Submodule
+
+Add GLFW repository as a submodule within our project at `external/glfw` directory:
+
+```
+git submodule add https://github.com/glfw/glfw.git external/glfw
+```
+
+#### 1.2.1.2 CMake Changes
+
+Update the project's CMake configuration in the root directory:
+
+```cmake
+# ./CMakeLists.txt
+...
+
+#include the subdirectory containing our libs
+add_subdirectory(${PROJECT_NAME}/external/glfw)
+
+# Include GLFW headers
+target_include_directories(${PROJECT_NAME} PUBLIC external/glfw/include)
+
+# Link GLFW library
+target_link_directories(${PROJECT_NAME} PUBLIC external/glfw/src)
+target_link_libraries(learnOpenGL glfw)
+
+```
+
+This ensures that the linker searches for GLFW libraries in the specified directory when building the target.
+
+
+>[!TIP]
+>Verify the integration by adding 
+>
+>```
+>#include <GLFW/glfw3.h>
+>```
+>
+> into `main.cpp` and building the project.
 
