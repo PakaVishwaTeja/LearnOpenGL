@@ -9,6 +9,12 @@ This repository serves as a documentation resource for my journey in learning Op
 # [1 . Setting Things up](docs/setting_things_up.md)
 # [2 . Hello Window](docs/2.%20Hello_Window.md)
 
+### Configure,build and run
+```
+bash scripts/configure.sh 
+bash scripts/build.sh 
+bash scripts/run.sh 
+```
 ## Contributions
 
 Join me on this epic quest! If you have spells to share, monsters to slay, or just a funny things about your encounters with OpenGL, don't hesitate to chime in. Together, we'll make this journey not only educational but also downright fun.
