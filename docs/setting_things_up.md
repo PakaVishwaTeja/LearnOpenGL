@@ -1,16 +1,24 @@
 # 1. Setting things up!
 ### Steps Overview
 
+
 1.1 **Setting up the Basics**
+- [referance commit](https://github.com/PakaVishwaTeja/LearnOpenGL/commit/7716ab9463355a68dddc1e10ab9db890d5402815)
+```
     
     - Initialize a Git repository for version control.
     - Configure basic CMake and build scripts.
     
+```
 1.2 **Bringing in the Crew: GLFW and Glad**
-    
-    - Incorporate GLFW for window management.
+- [setting up GLFW commit](https://github.com/PakaVishwaTeja/LearnOpenGL/commit/2a907a9549feace1287f3276c3363b59ad863f25)
+- [setting up glad commit](https://github.com/PakaVishwaTeja/LearnOpenGL/commit/2cebcf8914fbb1ccd03c63ec7e52039b09408cde)
+```
+	
+	- Incorporate GLFW for window management.
     - Add Glad to access OpenGL functions from hardware.
-
+    
+```
 
 >[!NOTE]
 >OpenGL development requires 

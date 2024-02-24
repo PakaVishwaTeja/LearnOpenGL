@@ -7,6 +7,7 @@
 This repository serves as a documentation resource for my journey in learning OpenGL. As I progress through the learning process, I aim to document key concepts, code snippets, challenges faced, and solutions devised. This README provides an overview of my learning journey and serves as a guide for others interested in exploring OpenGL.
 
 # [1 . Setting Things up](docs/setting_things_up.md)
+# [2 . Hello Window](docs/2.%20Hello_Window.md)
 
 ## Contributions
 
