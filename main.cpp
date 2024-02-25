@@ -27,7 +27,7 @@ void processInput(GLFWwindow *window);
 void initialize();
 void vertexSpecification();
 void createGraphicsPipeline();
-    string loadShaderAsString( string filename);
+    string loadShaderAsString( const string &filename);
         GLuint createShaderProgram(string vs , string fs);
             GLuint compileShader(GLuint type ,string src);
 void mainloop();
@@ -76,9 +76,7 @@ void initialize(){
         exit(1);
     }   
 
-    // with this OpenGL knows how we want to display the data and coordinates with respect to the window
-    //i.e. maps -1 to 1 to 0 to 800
-    glViewport(0, 0, 800, 600);
+
     // if resized, reset glviewport to the new dimns
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);  
 
@@ -91,8 +89,10 @@ void vertexSpecification(){
         0.0f , 0.5f , 0.0f
     };
     
+    glGenVertexArrays(1, &VAO);
     glGenBuffers(1 , &VBO);
 
+    glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER,VBO);
     glBufferData(GL_ARRAY_BUFFER , sizeof(vertices) , vertices , GL_STATIC_DRAW);
@@ -100,11 +100,12 @@ void vertexSpecification(){
     glVertexAttribPointer(0,3,GL_FLOAT , GL_FALSE , 3 * sizeof(GLfloat) , (void*)0);
     glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER , 0);
+    glBindVertexArray(0); 
 }
 void createGraphicsPipeline(){
     //load shaders
-    string vsSrc  = loadShaderAsString("../../shaders/vert.glsl");
-    string fsSrc  = loadShaderAsString("../../shaders/frag.glsl");
+    string vsSrc  = loadShaderAsString("/Users/vishwa/dev/Learn_OpenGL/shaders/vert.glsl");
+    string fsSrc  = loadShaderAsString("/Users/vishwa/dev/Learn_OpenGL/shaders/frag.glsl");
 
     gGraphicsPipeline = createShaderProgram(vsSrc , fsSrc);
 }
@@ -113,7 +114,7 @@ GLuint createShaderProgram(string vs , string fs){
 
     //compiling shader source
     GLuint vertexShader = compileShader(GL_VERTEX_SHADER,vs);
-    GLuint fragmentShader = compileShader(GL_FRAGMENT_SHADER,vs);
+    GLuint fragmentShader = compileShader(GL_FRAGMENT_SHADER,fs);
 
     //linking shaders to program object i.e graphics pipeline
     glAttachShader(programObject , vertexShader);
@@ -156,7 +157,7 @@ GLuint compileShader(GLuint type ,string src){
 
     return shaderObject;
 }
-string loadShaderAsString( string filename){
+string loadShaderAsString( const string &filename){
     string result = "";
     string line = "";
     ifstream myFile;
@@ -167,6 +168,7 @@ string loadShaderAsString( string filename){
         }
         myFile.close();
     }else{
+        std::cerr << "Error opening file: " << strerror(errno) << std::endl;
         cout<<filename<<" not opened!"<<endl;
     }
     return result;
@@ -194,7 +196,7 @@ void predraw(){
 }
 void draw(){
   glUseProgram(gGraphicsPipeline);
-  glBindBuffer(GL_ARRAY_BUFFER , VBO);
+  glBindVertexArray(VAO);
   glDrawArrays(GL_TRIANGLES , 0 , 3);
 }
 void cleanup(){
