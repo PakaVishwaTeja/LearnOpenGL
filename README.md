@@ -10,6 +10,7 @@ This repository serves as a documentation resource for my journey in learning Op
 # [2 . Hello Window](docs/2.%20Hello_Window.md)
 # [3.1 . Hello Triangle pt1 (using only VBO)](docs/3.1%20Hello_triangle_pt1.md)
 # [3.1 . Hello Triangle pt2 (using VAO)](docs/3.2%20Hello_trinagle_pt2.md)
+# [3.1 . Hello Triangle pt3 (Rectangle-Element Buffer Objects)](docs/3.3%20Hello_Triangle_pt3.md)
 
 
 ### Configure,build and run
