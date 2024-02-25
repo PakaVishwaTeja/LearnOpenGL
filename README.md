@@ -8,6 +8,8 @@ This repository serves as a documentation resource for my journey in learning Op
 
 # [1 . Setting Things up](docs/setting_things_up.md)
 # [2 . Hello Window](docs/2.%20Hello_Window.md)
+# [3.1 . Hello Triangle pt1](docs/3.1%20Hello_triangle_pt1.md)
+
 
 ### Configure,build and run
 ```
