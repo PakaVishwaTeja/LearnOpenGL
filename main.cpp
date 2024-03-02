@@ -68,14 +68,14 @@ void initialize(){
 
 void vertexSpecification(){
     GLfloat vertices[] = {
-        0.5f,  0.5f, 0.0f,  // top right
-        0.5f, -0.5f, 0.0f,  // bottom right
-        -0.5f, -0.5f, 0.0f,  // bottom left
-        -0.5f,  0.5f, 0.0f   // top left 
-    };
+    // positions         // colors
+     0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // bottom right
+    -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // bottom left
+     0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f    // top 
+}; 
     unsigned int indices[] = {
-        0, 1, 3,   // first triangle
-        1, 2, 3    // second triangle
+        0, 1, 2   // first triangle
+        //1, 2, 3    // second triangle
     };
 
     glGenVertexArrays(1, &VAO);
@@ -92,8 +92,12 @@ void vertexSpecification(){
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW); 
 
-    glVertexAttribPointer(0,3,GL_FLOAT , GL_FALSE , 3 * sizeof(GLfloat) , (void*)0);
+    //vertex position attribute
+    glVertexAttribPointer(0,3,GL_FLOAT , GL_FALSE , 6 * sizeof(GLfloat) , (void*)0);
     glEnableVertexAttribArray(0);
+    //vertex color attribute
+    glVertexAttribPointer(1,3,GL_FLOAT , GL_FALSE , 6 * sizeof(GLfloat) , (void*)(3*sizeof(float)));
+    glEnableVertexAttribArray(1);
 
     //unbind
     glBindBuffer(GL_ARRAY_BUFFER , 0);
@@ -184,9 +188,15 @@ void mainloop(){
     }
 }
 void predraw(){
+
+    float timeValue = glfwGetTime();
+    float gValue = (sin(timeValue) / 2.0f) + 0.5f;
+    float rValue = (sin(timeValue + 3) / 2.0f) + 0.5f;
+    float bValue = (sin(timeValue + 5) / 2.0f) + 0.5f;
+
         //  glClearColor function is a _state-setting_ function
-        glClearColor(0.0f, 0.5f, 0.3f, 1.0f);
-        
+        //glClearColor(rValue, gValue,bValue, 1.0f);
+        glClearColor(0.2, 0.3,0.2, 1.0f);
         //glClear is a _state-using_ function. 
         //It uses the current state to retrieve the clearing color from.
         glClear(GL_COLOR_BUFFER_BIT);
@@ -198,17 +208,17 @@ void draw(){
   //uniforms
   int vertexColorLocation = glGetUniformLocation(gGraphicsPipeline , "ourColor");
 
-  float timeValue = glfwGetTime();
-  float gValue = (sin(timeValue) / 2.0f) + 0.5f;
-  float rValue = (sin(timeValue + 3) / 2.0f) + 0.5f;
-  float bValue = (sin(timeValue + 5) / 2.0f) + 0.5f;
+//   float timeValue = glfwGetTime();
+//   float gValue = (sin(timeValue) / 2.0f) + 0.5f;
+//   float rValue = (sin(timeValue + 3) / 2.0f) + 0.5f;
+//   float bValue = (sin(timeValue + 5) / 2.0f) + 0.5f;
 
-  glUniform4f(vertexColorLocation, rValue, gValue, bValue, 1.0f);
+  glUniform4f(vertexColorLocation, 0.5, 0.2, 0.0, 1.0f);
 
 
   glBindVertexArray(VAO);
   //glDrawArrays(GL_TRIANGLES , 0 , 3);
-  glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+  glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
 }
 void cleanup(){
     
