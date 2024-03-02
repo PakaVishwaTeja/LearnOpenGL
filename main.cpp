@@ -194,8 +194,20 @@ void predraw(){
 void draw(){
   glUseProgram(gGraphicsPipeline);
   //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+  //uniforms
+  int vertexColorLocation = glGetUniformLocation(gGraphicsPipeline , "ourColor");
+
+  float timeValue = glfwGetTime();
+  float gValue = (sin(timeValue) / 2.0f) + 0.5f;
+  float rValue = (sin(timeValue + 3) / 2.0f) + 0.5f;
+  float bValue = (sin(timeValue + 5) / 2.0f) + 0.5f;
+
+  glUniform4f(vertexColorLocation, rValue, gValue, bValue, 1.0f);
+
+
   glBindVertexArray(VAO);
-//   glDrawArrays(GL_TRIANGLES , 0 , 3);
+  //glDrawArrays(GL_TRIANGLES , 0 , 3);
   glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 void cleanup(){
