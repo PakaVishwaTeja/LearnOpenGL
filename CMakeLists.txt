@@ -17,6 +17,7 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/external/glad)
 target_include_directories(${PROJECT_NAME}
  PUBLIC PUBLIC ${CMAKE_SOURCE_DIR}/external/glfw/include
  PUBLIC PUBLIC ${CMAKE_SOURCE_DIR}/external/glad/include
+ PUBLIC PUBLIC ${CMAKE_SOURCE_DIR}/include
  )
 
 #specifies the library search directories for the linker during target building.
