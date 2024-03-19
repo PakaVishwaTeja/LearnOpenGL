@@ -13,6 +13,8 @@ This repository serves as a documentation resource for my journey in learning Op
 # [3.3 . Hello Triangle pt3 (Rectangle-Element Buffer Objects)](docs/3.3%20Hello_Triangle_pt3.md)
 # [4 . shaders](docs/4.%20Shaders%20and%20more.md)
 # [5 . Textures](docs/5.%20Textures.md)
+# [6 . Math(transformations)](docs/6.%20Math%20(Transformations).md)
+# [7 . Drawing cube(s)](docs/7.%20Drawing%20cube(s).md)
 
 
 ### Configure,build and run
