@@ -179,11 +179,7 @@ void mainloop(){
     //static uniforms
     glUniform1i(glGetUniformLocation(shaderProgram->id, "texture1"), 0);
     glUniform1i(glGetUniformLocation(shaderProgram->id, "texture2"), 1);
-    glm::mat4 trans = glm::mat4(1.0f);
-    trans = glm::rotate(trans, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
-    trans = glm::scale(trans, glm::vec3(0.7, 0.5, 0.5));  
-    GLuint transformLoc = glGetUniformLocation(shaderProgram->id , "transform");
-    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+
     /* Loop until the user closes the window */
     while(!glfwWindowShouldClose(window))
     {  
@@ -200,7 +196,12 @@ void predraw(){
     // float gValue = (sin(timeValue) / 2.0f) + 0.5f;
     // float rValue = (sin(timeValue + 3) / 2.0f) + 0.5f;
     // float bValue = (sin(timeValue + 5) / 2.0f) + 0.5f;
-
+    glm::mat4 trans = glm::mat4(1.0f);
+    trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
+    trans = glm::rotate(trans, (float)glfwGetTime(), glm::vec3(0.0f, 0.0f, 1.0f));
+    trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));  
+    GLuint transformLoc = glGetUniformLocation(shaderProgram->id , "transform");
+    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
         //  glClearColor function is a _state-setting_ function
         //glClearColor(rValue, gValue,bValue, 1.0f);
         glClearColor(0.2, 0.3,0.2, 1.0f);
