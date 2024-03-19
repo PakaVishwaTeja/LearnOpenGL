@@ -12,6 +12,7 @@ This repository serves as a documentation resource for my journey in learning Op
 # [3.2 . Hello Triangle pt2 (using VAO)](docs/3.2%20Hello_trinagle_pt2.md)
 # [3.3 . Hello Triangle pt3 (Rectangle-Element Buffer Objects)](docs/3.3%20Hello_Triangle_pt3.md)
 # [4 . shaders](docs/4.%20Shaders%20and%20more.md)
+# [5 . Textures](docs/5.%20Textures.md)
 
 
 ### Configure,build and run
