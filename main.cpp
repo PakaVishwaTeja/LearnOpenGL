@@ -4,6 +4,13 @@
 #include <string>
 #include<fstream>
 #include<shader.h>
+#define STB_IMAGE_IMPLEMENTATION
+#include<stb_image.h>
+// #include <glm/glm.hpp>
+
+
+#define STB_IMAGE_IMPLEMENTATION
+
 using namespace std;
 
 GLFWwindow* window;
@@ -11,11 +18,14 @@ GLuint VBO;
 GLuint VAO;
 GLuint EBO;
 shader* shaderProgram;
+GLuint texture1;
+GLuint texture2;
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 
 void initialize();
 void vertexSpecification();
+void setTextures();
 void mainloop();
     void predraw();
     void draw();
@@ -25,6 +35,7 @@ int main(){
     cout<<"hello humans!"<<endl;
     initialize();
     vertexSpecification();
+    setTextures();
     shaderProgram = new shader(
         "/Users/vishwa/dev/Learn_OpenGL/shaders/vert.glsl",
         "/Users/vishwa/dev/Learn_OpenGL/shaders/frag.glsl"
@@ -43,7 +54,7 @@ void initialize(){
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(800, 600, "LearnOpenGL vishwa", NULL, NULL);
+    window = glfwCreateWindow(800, 800, "LearnOpenGL vishwa", NULL, NULL);
     if (window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
@@ -68,15 +79,16 @@ void initialize(){
 }
 
 void vertexSpecification(){
-    GLfloat vertices[] = {
-    // positions         // colors
-     0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // bottom right
-    -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // bottom left
-     0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f    // top 
-}; 
+GLfloat vertices[] = {
+    // positions          // colors           // texture coords
+     0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
+     0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
+    -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
+    -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left 
+};
     unsigned int indices[] = {
-        0, 1, 2   // first triangle
-        //1, 2, 3    // second triangle
+        0, 1, 3 ,  // first triangle
+        1, 2, 3    // second triangle
     };
 
     glGenVertexArrays(1, &VAO);
@@ -94,19 +106,72 @@ void vertexSpecification(){
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW); 
 
     //vertex position attribute
-    glVertexAttribPointer(0,3,GL_FLOAT , GL_FALSE , 6 * sizeof(GLfloat) , (void*)0);
+    glVertexAttribPointer(0,3,GL_FLOAT , GL_FALSE , 8 * sizeof(GLfloat) , (void*)0);
     glEnableVertexAttribArray(0);
     //vertex color attribute
-    glVertexAttribPointer(1,3,GL_FLOAT , GL_FALSE , 6 * sizeof(GLfloat) , (void*)(3*sizeof(float)));
+    glVertexAttribPointer(1,3,GL_FLOAT , GL_FALSE , 8 * sizeof(GLfloat) , (void*)(3*sizeof(GLfloat)));
     glEnableVertexAttribArray(1);
+    //vertex tex coords
+    glVertexAttribPointer(2,2,GL_FLOAT , GL_FALSE , 8 * sizeof(GLfloat) , (void*)(6*sizeof(GLfloat)));
+    glEnableVertexAttribArray(2);
+
 
     //unbind
     glBindBuffer(GL_ARRAY_BUFFER , 0);
     glBindVertexArray(0); 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER , 0);//unbind after unbinding VAO
 }
+void setTextures(){
+    glGenTextures(1 , &texture1);
+    glBindTexture(GL_TEXTURE_2D , texture1);
 
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    int width, height, nrChannels;
+    unsigned char *data = stbi_load("/Users/vishwa/dev/Learn_OpenGL/res/texture.jpeg", &width, &height, &nrChannels, 0);
+    if (data)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+        std::cout << "Failed to load texture" << std::endl;
+    }
+    stbi_image_free(data);
+
+    glGenTextures(1 , &texture2);
+    glBindTexture(GL_TEXTURE_2D , texture2);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    stbi_set_flip_vertically_on_load(true);  
+
+    data = stbi_load("/Users/vishwa/dev/Learn_OpenGL/res/image.png", &width, &height, &nrChannels, 0);
+    if (data)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+        std::cout << "Failed to load texture" << std::endl;
+    }
+    stbi_image_free(data);
+}
 void mainloop(){
+    shaderProgram->use();
+
+    //static uniforms
+    glUniform1i(glGetUniformLocation(shaderProgram->id, "texture1"), 0);
+    glUniform1i(glGetUniformLocation(shaderProgram->id, "texture2"), 1);
+
     /* Loop until the user closes the window */
     while(!glfwWindowShouldClose(window))
     {  
@@ -133,15 +198,19 @@ void predraw(){
 }
 void draw(){
 
-  shaderProgram->use();
+  
 
   //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
   shaderProgram->setFloat4( "ourColor" ,  0.2,0.2,0.2,1.0);
-
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture1);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, texture2);
+   
   glBindVertexArray(VAO);
   //glDrawArrays(GL_TRIANGLES , 0 , 3);
-  glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
+  glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 void cleanup(){
     
