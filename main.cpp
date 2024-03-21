@@ -9,16 +9,19 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include<shader.h>
-
+#include <camera.h>
 #define STB_IMAGE_IMPLEMENTATION
 
 using namespace std;
 bool firstMouse = true;
 int HEIGHT = 800, WIDTH = 800;
 float lastX = HEIGHT/2, lastY = WIDTH/2;
-float yaw = -90.0f;
-float pitch = 0.0f;
-float fov = 45.0f;
+// float yaw = -90.0f;
+// float pitch = 0.0f;
+// float fov = 45.0f;
+
+camera* o_camera;
+
 GLFWwindow* window;
 GLuint VBO;
 GLuint VAO;
@@ -27,9 +30,9 @@ shader* shaderProgram;
 GLuint texture1;
 GLuint texture2;
 
-glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  3.0f);
-glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
+// glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  3.0f);
+// glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+// glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
 
 float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
