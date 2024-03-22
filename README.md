@@ -15,6 +15,7 @@ This repository serves as a documentation resource for my journey in learning Op
 # [5 . Textures](docs/5.%20Textures.md)
 # [6 . Math(transformations)](docs/6.%20Math%20(Transformations).md)
 # [7 . Drawing cube(s)](docs/7.%20Drawing%20cube(s).md)
+# [8. Camera](docs/8.%20camera.md)
 
 
 ### Configure,build and run
