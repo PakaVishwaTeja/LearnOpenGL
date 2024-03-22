@@ -9,6 +9,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include<shader.h>
+#include<camera.h>
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/string_cast.hpp>
 
 #define STB_IMAGE_IMPLEMENTATION
 
@@ -16,9 +19,10 @@ using namespace std;
 bool firstMouse = true;
 int HEIGHT = 800, WIDTH = 800;
 float lastX = HEIGHT/2, lastY = WIDTH/2;
-float yaw = -90.0f;
-float pitch = 0.0f;
-float fov = 45.0f;
+
+
+camera* cam;
+
 GLFWwindow* window;
 GLuint VBO;
 GLuint VAO;
@@ -27,9 +31,7 @@ shader* shaderProgram;
 GLuint texture1;
 GLuint texture2;
 
-glm::vec3 cameraPos   = glm::vec3(0.0f, 0.0f,  3.0f);
-glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
+
 
 float deltaTime = 0.0f;	// Time between current frame and last frame
 float lastFrame = 0.0f; // Time of last frame
@@ -50,20 +52,17 @@ void cleanup();
 
 int main(){
     cout<<"hello humans!"<<endl;
-    glm::vec4 vec(1.0f, 0.0f, 0.0f, 1.0f);
-    glm::mat4 trans = glm::mat4(1.0f);
-    //trans = glm::translate(trans, glm::vec3(1.0f, 1.0f, 0.0f));
-    trans = glm::rotate(trans, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
 
-    vec = trans * vec;
-    //std::cout << vec.x <<" "<< vec.y <<" "<< vec.z << std::endl;
     initialize();
     vertexSpecification();
     setTextures();
+
+    cam = new camera();
     shaderProgram = new shader(
         "/Users/vishwa/dev/Learn_OpenGL/shaders/vert.glsl",
         "/Users/vishwa/dev/Learn_OpenGL/shaders/frag.glsl"
         );
+
     mainloop();
     cleanup();
 
@@ -287,18 +286,20 @@ void predraw(){
 
     // glm::mat4 view;
     // view = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f), 
-  	// 	   glm::vec3(0.0f, 1.0f, 0.0f), 
+  	// 	   glm::vec3(0.0f, 0.0f, 2.0f), 
   	// 	   glm::vec3(0.0f, 1.0f, 0.0f));
 
     const float radius = 5.0f;
     float camX = sin(glfwGetTime()) * radius;
     float camZ = cos(glfwGetTime()) * radius;
     glm::mat4 view;
-    view = glm::lookAt(cameraPos , cameraPos + cameraFront , cameraUp );
+    view = cam->getLookAt();
+    //std::cout<<glm::to_string(view)<<endl;
+    // //  glm::lookAt(cam->cameraPos , cam->cameraPos + cam->cameraFront , cam->cameraUp );
 
     glm::mat4 projection;
     // projection = glm::perspective(glm::radians(45.0f), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
-    projection = glm::perspective(glm::radians(fov), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
+    projection = glm::perspective(glm::radians(cam->fov), (float)WIDTH / (float)HEIGHT, 0.1f, 100.0f);
     //projection = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f, 0.1f, 100.0f);
 
     shaderProgram->setMat4("model", model);
@@ -371,28 +372,13 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos){
         lastX = xpos;
         lastY = ypos;
         firstMouse = false;
-    }
-    float xoffset = xpos - lastX;
-    float yoffset = lastY - ypos; // reversed since y-coordinates range from bottom to top
+    } 
+    
+    cam->processMouse(xpos - lastX , lastY - ypos);
+
     lastX = xpos;
     lastY = ypos;
 
-    const float sensitivity = 0.1f;
-    xoffset *= sensitivity;
-    yoffset *= sensitivity;
-
-    yaw   += xoffset;
-    pitch += yoffset;
-
-    if(pitch > 89.0f)
-    pitch =  89.0f;
-    if(pitch < -89.0f)
-    pitch = -89.0f;
-    glm::vec3 direction;
-    direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-    direction.y = sin(glm::radians(pitch));
-    direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-    cameraFront = glm::normalize(direction);
 }
 
 
@@ -403,22 +389,17 @@ void processInput(GLFWwindow *window){
     if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
-    const float cameraSpeed =2.5f*deltaTime; // adjust accordingly
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        cameraPos += cameraSpeed * cameraFront;
+        cam->processKeyboard(FORWARD,deltaTime);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        cameraPos -= cameraSpeed * cameraFront;
+        cam->processKeyboard(BACKWARD,deltaTime);
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+        cam->processKeyboard(LEFT,deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+        cam->processKeyboard(RIGHT,deltaTime);
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-    fov -= (float)yoffset;
-    if (fov < 1.0f)
-        fov = 1.0f;
-    if (fov > 45.0f)
-        fov = 45.0f; 
+    cam->porcessScroll(yoffset);
 }
